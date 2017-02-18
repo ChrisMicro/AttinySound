@@ -13,6 +13,7 @@
   ********************* list of outhors **********************************
    
   v0.1  15.2.2017 C. -H-A-B-E-R-E-R-  initial version
+  v0.2  17.2.2017 C. -H-A-B-E-R-E-R-  interrupt protected access functions
 
   It is mandatory to keep the list of authors in this code.
   Please add your name if you improve/extend something
@@ -56,27 +57,39 @@ const int8_t PROGMEM  sintab[]={
 -89 ,-87 ,-85 ,-82 ,-80 ,-78 ,-75 ,-73 ,-70 ,-67 ,-65 ,-62 ,-59 ,-57 ,-54 ,-51 ,-48 ,-45 ,-42 ,-39 ,-36 ,-33 ,-30 ,-27 ,-24 ,-21 ,-18 ,-15 ,-12 ,-9 ,-6 ,-3
 };
 
-volatile uint16_t Freq_coefficient=1;
-volatile int16_t  Amplitude=256;
+#define F_CPU 16000000L
+
+volatile uint16_t Freq_coefficient = 1;
+volatile uint8_t  Amplitude = 255;
 
 void setFrequency(uint16_t frequency_Hz)
 {
-  Freq_coefficient = (uint32_t) F_CPU/256*frequency_Hz/256/256;
+  uint16_t temp = (uint32_t) F_CPU / 256 * frequency_Hz / 256 / 128;
+  cli();
+  Freq_coefficient = temp;
+  sei();
+}
+
+void setAmplitude(uint8_t amp)
+{
+  cli();
+  Amplitude = amp;
+  sei();
 }
 
 SIGNAL(TIMER1_COMPA_vect)
 {
   static uint16_t phase=0;
-  volatile int16_t temp;
-  
+  int16_t temp;
+
   phase += Freq_coefficient;
 
-  temp  = pgm_read_byte ( &sintab[ phase>>8 ] ) ;
+  temp  = (int8_t) pgm_read_byte ( &sintab[ phase>>8 ] ) ;
 
-  temp*=Amplitude;
-  temp=(temp>>8)+128;
+  temp *= Amplitude;
+  temp = (temp>>8)+128;
   OCR1A=temp;
-  
+    
 }
 
 void loop() 
