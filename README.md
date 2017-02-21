@@ -14,13 +14,20 @@ You can download very easily different synthizer apps when you have installed th
 * AudioBootLoader for Attiny85: https://github.com/ChrisMicro/TinyAudioBoot
 
 The AudioBootloader was orignially programmed for an Atmega8 or Atmega168. 
-Special thanks to [Ioyk](https://github.com/ATtinyTeenageRiot) for his work to rework it for Attiny85.
+Special thanks to [Ioyk](https://github.com/ATtinyTeenageRiot) for reworking it for Attiny85.
 
-The Attiny85 is connected simply to the AudioOutput of your PC by the following schematic:
+Here is a simple schematic of how to connect a PC and an Attiny85 for programming it. 
 
 <p align="left">
   <img src="/doc/audioInputSchematic.PNG" width="480"/>
 </p>
+
+There are precompiled wav files for the Attiny85 which you can download:
+
+* precompiled wav files for audio boot: https://github.com/ChrisMicro/AttinySound/tree/master/wavForAudioBoot
+
+The benefit of precompiled wav files: you don't need any programming software. 
+You can just click on it and the sound played will programm your Attiny85. 
 
 
 ## schematic
