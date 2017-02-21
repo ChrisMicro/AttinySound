@@ -1,7 +1,7 @@
 /*
 
   Testprogram for the hardware of the 8Bit synthesizer
-  
+
   8BitMixedTape-SoundProg2085
   Berliner Schule
   Version 0.8 Neo
@@ -44,7 +44,7 @@
                                             |_______|
 
 
-// IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across ???
+  // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across ???
 
 *************************************************************************************
 */
@@ -58,8 +58,8 @@
 #define SPEAKERPIN      1
 #define NEOPIXELPIN     0
 
-#define POTI_RIGHT     A1
-#define POTI_LEFT      A2
+#define POTI_LEFT      A1
+#define POTI_RIGHT     A2
 #define BUTTONS_ADC    A3
 
 #define NUMPIXELS      8
@@ -146,10 +146,12 @@ void setColorAllPixel(uint32_t color)
 void setColorLimitedPixel(uint16_t numberPix, uint32_t color)
 {
   uint8_t n;
+
   for (n = 0; n < numberPix; n++)
   {
-    pixels.setPixelColor(n, pixels.Color(color, 0, color)); // off
+    pixels.setPixelColor(n, pixels.Color(color, 0, color));
   }
+
 }
 
 void setColorLimited2Pixel(uint16_t numberPix, uint32_t color)
@@ -161,16 +163,25 @@ void setColorLimited2Pixel(uint16_t numberPix, uint32_t color)
   }
 }
 
+// scaled the adc of the 8BitMixTape voltage divider
+// to a return value in range: 0..1023
+uint16_t analogReadScaled(uint8_t channel)
+{
+  uint16_t value = analogRead(channel);
+  if (value > 511) value = 511;
+  return value * 2;
+}
+
 void loop()
 {
   pixels.setBrightness(255);
-  uint16_t p1 = 500 - analogRead(POTI_LEFT);
-  uint16_t p2 = analogRead(POTI_RIGHT);
+  uint16_t p1 = 1023 - analogReadScaled(POTI_LEFT);
+  uint16_t p2 = analogReadScaled(POTI_RIGHT);
 
   setColorAllPixel(0); // pixels off
 
-  setColorLimitedPixel((p1 >> 7), 30);
-  setColorLimited2Pixel((p2 >> 7), 50);
+  setColorLimitedPixel ((p1 >> 8), 30);
+  setColorLimited2Pixel((p2 >> 8), 50);
 
   uint8_t x = getButton();
   if (x == 1) pixels.setPixelColor(3, pixels.Color(0, 0, 50));
@@ -180,22 +191,22 @@ void loop()
     pixels.setPixelColor(3, pixels.Color(50, 0, 0));
     pixels.setPixelColor(4, pixels.Color(50, 0, 0));
     pixels.show(); // This sends the updated pixel color to the hardware.
-    playSound(p1 + 20, (p2/5) + 10);
+    playSound(p1 + 20, (p2 / 5) + 10);
   }
-  
+
   if (x == 3 && p1 < 30 && p2 < 30) {
     pixels.setBrightness(80);
     rainbowCycle(3, 5);
   }
-  
+
   pixels.show(); // This sends the updated pixel color to the hardware.
 }
 
 void rainbowCycle(uint8_t wait, uint8_t rounds) {
   uint16_t i, j;
 
-  for(j=0; j<256*rounds; j++) { // 5 cycles of all colors on wheel
-    for(i=0; i< pixels.numPixels(); i++) {
+  for (j = 0; j < 256 * rounds; j++) { // 5 cycles of all colors on wheel
+    for (i = 0; i < pixels.numPixels(); i++) {
       pixels.setPixelColor(i, Wheel(((i * 256 / pixels.numPixels()) + j) & 255));
     }
     pixels.show();
@@ -207,10 +218,10 @@ void rainbowCycle(uint8_t wait, uint8_t rounds) {
 // The colours are a transition r - g - b - back to r.
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
-  if(WheelPos < 85) {
+  if (WheelPos < 85) {
     return pixels.Color(255 - WheelPos * 3, 0, WheelPos * 3);
   }
-  if(WheelPos < 170) {
+  if (WheelPos < 170) {
     WheelPos -= 85;
     return pixels.Color(0, WheelPos * 3, 255 - WheelPos * 3);
   }
