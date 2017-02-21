@@ -1,7 +1,7 @@
 # AttinySound
 sound generation on the AVR-Attiny85
 
-This synthesizer is based on the famous [8BitMixTape](https://github.com/8BitMixtape/8bitMixTape-SoundProg2085) 
+This synthesizer is based on the famous [8BitMixTape](https://github.com/8BitMixtape/8bitMixTape-SoundProg2085) . 
 
 <p align="left">
   <img src="/doc/NeoCycloSynth.PNG" width="480"/>
@@ -31,7 +31,7 @@ You can just click on it and the sound played will programm your Attiny85.
 
 
 ## schematic
-This synth is mainly compatible to the 8BitMixTape-SoundProg2085
+This synth is mainly compatible to the [8BitMixTape-SoundProg2085](https://github.com/8BitMixtape/8bitMixTape-SoundProg2085) 
 ![](https://raw.githubusercontent.com/wiki/8BitMixtape/8bitMixTape-SoundProg2085/Schematics_85SoundProg_MixTape_V08.png)
 
 
