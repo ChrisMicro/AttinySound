@@ -10,7 +10,7 @@ This synthesizer is based on the famous [8BitMixTape](https://github.com/8BitMix
 It could be done on a breadboard.
 
 <p align="left">
-  <img src="/doc/FritzingNeoCycloSynth.PNG" width="480"/>
+  <img src="/doc/FritzingNeoCycloSynth.PNG" width="640"/>
 </p>
 
 
@@ -25,7 +25,7 @@ Special thanks to [Ioyk](https://github.com/ATtinyTeenageRiot) for reworking it 
 Here is a simple schematic of how to connect a PC and an Attiny85 for programming it. 
 
 <p align="left">
-  <img src="/doc/audioInputSchematic.PNG" width="480"/>
+  <img src="/doc/audioInputSchematic.PNG" width="640"/>
 </p>
 
 There are precompiled wav files for the Attiny85 which you can download:
