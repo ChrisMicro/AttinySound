@@ -7,6 +7,12 @@ This synthesizer is based on the famous [8BitMixTape](https://github.com/8BitMix
   <img src="/doc/NeoCycloSynth.PNG" width="480"/>
 </p>
 
+It could be done on a breadboard.
+
+<p align="left">
+  <img src="/doc/FritzingNeoCycloSynth.PNG" width="480"/>
+</p>
+
 
 ## AudioBootLoader
 You can download very easily different synthizer apps when you have installed the AudioBootLoader on your Attiny85.
