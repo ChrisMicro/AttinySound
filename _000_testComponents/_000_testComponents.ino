@@ -136,7 +136,7 @@ void setColorAllPixel(uint32_t color)
   uint8_t n;
   for (n = 0; n < NUMPIXELS; n++)
   {
-    pixels.setPixelColor(n, 0); // off
+    pixels.setPixelColor(n, color); 
   }
 }
 
