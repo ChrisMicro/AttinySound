@@ -10,7 +10,7 @@ Here is a [hitlist](https://8bitmixtape.github.io/) of the best apps whick you c
 
 Because it makes fun to create something with minimalistic hardware. 
 There are many people around this world playing with this type of synthesizer and it is really fascinating what they create.
-There are sound which you wouldnt't believe that it is possible to produce with this little chip.
+There are sounds which you wouldnt't believe that it is possible to produce with this little chip.
  
 <p align="left">
   <img src="/doc/NeoCycloSynth.PNG" width="480"/>
@@ -19,7 +19,7 @@ There are sound which you wouldnt't believe that it is possible to produce with 
 It could be done on a breadboard.
 
 <p align="left">
-  <img src="/doc/FritzingNeoCycloSynth.PNG" width="64"/>
+  <img src="/doc/FritzingNeoCycloSynth.PNG" width="640"/>
 </p>
 
 ## AudioBootLoader
