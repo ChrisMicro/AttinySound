@@ -47,12 +47,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-  20.2.2017  chris, version 1.5    for ATTINY13
+  20.2.2017  chris, version 1.5    for ATTINY85
+  27.2.2017  chris, version 2.0    extended version
 
   C. -H-A-B-E-R-E-R- alias chris
 
   Please maintain the list of authors.
-  
+
 *************************************************************************************/
 
 #include "Pt1.h"
@@ -285,7 +286,7 @@ void loop()
   static uint16_t startTime_ms;
 
   static int16_t timer1;
-  static uint16_t maxFrequency=3000;
+  static uint16_t maxFrequency = 3000;
 
   startTime_ms = millis();
   timer1 = CycleTimer1_ms;
@@ -300,8 +301,13 @@ void loop()
   lfo2.setMinMax(0, 255);
   uint8_t selector = 1;
   setColorAllPixel(0); // pixels off
-  displayBinrayValue( selector, pixels.Color(0, 15, 0));
+
+  displayBinrayValue( 0xF, pixels.Color(0, 0, 1));
+  pixels.setPixelColor(selector - 1, pixels.Color(0, 15, 0));
   pixels.show(); // This sends the updated pixel color to the hardware.
+
+  uint16_t  mainEnvelope = 255;
+  uint8_t singleShot_flag=0;
   while (1)
   {
 
@@ -320,27 +326,74 @@ void loop()
     v4 = analogReadScaled(POTI_LEFT);
 
     lfo1.setFrequency_mHz(v3 * 60);
-    
-    if(selector==1) lfo2.setFrequency_mHz(v4 * 60);
-    if(selector==2) lfo1.setMinMax(10,v4*3+20);
-    if(selector==3) lfo1.setWaveformFine(v4);
-    if(selector==4) wavetype=v4>>7;    
+
+    uint16_t lfo2_Hz;
+    uint16_t lfo2ModulationMax_Hz;
+    uint16_t lfo1Wafeform;
+    uint8_t  mainOscillatorWaveType;
+
+
+
+    if (selector == 1)
+    {
+      lfo2_Hz = v4 * 60;
+      lfo2.setFrequency_mHz(lfo2_Hz);
+    }
+
+    if (selector == 2)
+    {
+      mainOscillatorWaveType = v4 >> 7;
+      if(mainOscillatorWaveType>NOISE)mainOscillatorWaveType=NOISE; 
+      wavetype = mainOscillatorWaveType;
+    }
+
+    if (selector == 3)
+    {
+      lfo2ModulationMax_Hz = v4 * 3 + 20;
+      lfo1.setMinMax(10, lfo2ModulationMax_Hz);
+    }
+
+    if (selector == 4)
+    {
+      lfo1Wafeform = v4;
+      lfo1.setWaveformFine(v4);
+    }
+
     v1 = lfo1.calcNewValue();
     v2 = lfo2.calcNewValue();
-   
-    setFrequency(v1); 
-    setAmplitude(v2);
+
+    setFrequency(v1);
+    setAmplitude((v2 * lp1.filter(mainEnvelope)) >> 8);
 
     if (getButton() == 1)
     {
-      selector++;
-      if (selector > 4) selector = 1;
-      
+      singleShot_flag=true;
       setColorAllPixel(0); // pixels off
-      displayBinrayValue( selector, pixels.Color(0, 15, 0));
+
+      //displayBinrayValue( 0xF, pixels.Color(0, 0, 15));
+      pixels.setPixelColor(selector - 1, pixels.Color(0, 15, 0));
       pixels.show(); // This sends the updated pixel color to the hardware.
-      
-      while(getButton()!=0);
+
+      mainEnvelope = 0;
+      lp1.setOutput(255);
+
+    }
+
+    if (getButton() == 2)
+    {
+      mainEnvelope = 255;
+      if(!singleShot_flag)      selector++;
+      singleShot_flag=false;
+      if (selector > 4) selector = 1;
+
+      setColorAllPixel(0); // pixels off
+
+      displayBinrayValue( 0xF, pixels.Color(0, 0, 1));
+      pixels.setPixelColor(selector - 1, pixels.Color(0, 15, 0));
+      //displayBinrayValue( selector, pixels.Color(0, 15, 0));
+      pixels.show(); // This sends the updated pixel color to the hardware.
+
+      while (getButton() != 0);
 
     }
 
