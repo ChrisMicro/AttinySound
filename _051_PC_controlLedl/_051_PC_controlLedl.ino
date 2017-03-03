@@ -112,14 +112,43 @@ uint16_t getValue()
   return value;
 }
 
+uint8_t LedNumber=0;
+uint8_t Red=0;
+uint8_t Green=0;
+uint8_t Blue=0;
+ 
 void loop()
 {
-
+  
   receiveFrame();
-  playSound(getValue(),100);
+  switch(getCommand())
+  {
+    case 1:
+    {
+      Red=getValue();
+    }break;
+    
+    case 2:
+    {
+      Green=getValue();
+    }break;
+    
+    case 3:
+    {
+      Blue=getValue();
+    }break;
+    
+    case 4:
+    {
+      LedNumber=getValue();
+    }break;
+    
+  }
+  
+  //playSound(getValue(),100);
   setColorAllPixel(0); // pixels off
 
-  displayBinrayValue( getCommand(), pixels.Color(0, 15, 0));
+  pixels.setPixelColor( LedNumber, pixels.Color(Red, Green, Blue));
 
   pixels.show(); // This sends the updated pixel color to the hardware.
 
