@@ -99,11 +99,13 @@ void setup()
   
 }
 
+// the command has 5 bits
 uint8_t getCommand()
 {
-  return (FrameData[0]>>2)&0x7;
+  return (FrameData[0]>>2)&0x1f;
 }
 
+// the value has 10 bits
 uint16_t getValue()
 {
   uint16_t value;

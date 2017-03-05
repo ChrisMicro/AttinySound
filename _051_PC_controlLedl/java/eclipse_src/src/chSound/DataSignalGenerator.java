@@ -135,7 +135,7 @@ public class DataSignalGenerator
 	public void writeCommand(int command, int value) throws LineUnavailableException
 	{
 		int[] data=new int[2];
-		command&=0x07; // 3 bits for command
+		command&=0x1f; // 5 bits for command
 		data[0]=(byte)(command<<2);
 		data[0]+=(byte)((value>>8)&0x3); 
 		data[1]=(byte)(value&0xFF);
