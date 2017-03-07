@@ -169,7 +169,7 @@ void comandInterpreter()
     case 2:
       {
         Green = getValue();
-        setWaveform(Green / 200);
+        setWaveformFine(Green / 4);
 
       } break;
 

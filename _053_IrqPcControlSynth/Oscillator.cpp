@@ -77,7 +77,7 @@ void Oscillator::setWaveformFine(uint16_t wert)
 	if (wert > 60*FACTOR && wert <= 188*FACTOR) 
 	{
 		wave = RECTANGLE;
-		RectanglePwmValue = (wert>>2)-60;
+		RectanglePwmValue = 315-(wert>>2);
 	}
 	if (wert > 188*FACTOR) wave = SAWTOOTH;
 	if (wert > 200*FACTOR) wave = TRIANGLE;

@@ -127,14 +127,16 @@ void setWaveform(uint8_t waveType)
 void setWaveformFine(uint8_t wert)
 {
   uint8_t wave;
-
+  
+  wert=255-wert;
+  
   if (wert <= 60) {
     wave = NOISE;
   }
   if (wert > 60 && wert <= 188)
   {
     wave = RECTANGLE;
-    RectanglePwmValue = ((wert - 60) > 1);
+    RectanglePwmValue = 315-wert;
   }
   if (wert > 188) wave = SAWTOOTH;
   if (wert > 200) wave = TRIANGLE;
