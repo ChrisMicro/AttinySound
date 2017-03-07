@@ -153,6 +153,8 @@ uint8_t SynthSetup = 0;
 Oscillator lfo1( LoopTime_ms );
 Oscillator lfo2( LoopTime_ms );
 
+uint8_t Volume=255;
+
 void comandInterpreter()
 {
   switch (getCommand())
@@ -161,7 +163,6 @@ void comandInterpreter()
       {
         Red = getValue();
         setFrequency(Red * 2);
-        lfo1.setMinMax(10, Red * 3);
       } break;
 
     case 2:
@@ -174,24 +175,37 @@ void comandInterpreter()
     case 3:
       {
         Blue = getValue();
-        setAmplitude(Blue / 4 );
-        lfo2.setWaveformFine(Blue);
+        setAmplitude(Blue );
+        Volume=Blue;
       } break;
     case 4:
       {
         lfo1.setFrequency_mHz(getValue() * 32);
       } break;
-
     case 5:
+      {
+        lfo1.setWaveformFine(getValue());
+      } break;
+    case 6: // max lfo amplitude
+      {
+        lfo1.setMinMax(0,getValue()*4);
+      } break;   
+    case 7:
       {
         lfo2.setFrequency_mHz(getValue() * 32);
       } break;
-
+    case 8:
+      {
+        lfo2.setWaveformFine(getValue());
+      } break;
+    case 9: // max lfo amplitude
+      {
+        lfo2.setMinMax(0,getValue());
+      } break;
     case 16:
       {
         LedNumber = getValue();
-        SynthSetup=LedNumber&0x3;
-        //if (SynthSetup > 3)SynthSetup = 0;
+        SynthSetup=LedNumber;
       } break;
   }
 }
@@ -218,16 +232,12 @@ void loop()
       // wait for loop cycle
       while ( (uint16_t) millis() - startTime_ms < LoopTime_ms );
       startTime_ms = millis();
+      
       uint16_t v1,v2;
       v1 = lfo1.calcNewValue();
-      if (SynthSetup == 1)setFrequency(v1);
-      v2= lfo2.calcNewValue();
-      if (SynthSetup == 2)setAmplitude(v2);
-      if (SynthSetup == 3)
-      {
-        setFrequency(v1);
-        setAmplitude(v2);
-      }
+      v2 = lfo2.calcNewValue();
+      if (SynthSetup & 0x01 ) setFrequency(v1);
+      if (SynthSetup & 0x02 ) setAmplitude((v2*Volume)>>8);
     }
   }
 }
