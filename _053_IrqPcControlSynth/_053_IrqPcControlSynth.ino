@@ -154,6 +154,7 @@ Oscillator lfo1( LoopTime_ms );
 Oscillator lfo2( LoopTime_ms );
 
 uint8_t Volume=255;
+int16_t HFOfrequency=440;
 
 void comandInterpreter()
 {
@@ -161,8 +162,8 @@ void comandInterpreter()
   {
     case 1:
       {
-        Red = getValue();
-        setFrequency(Red * 2);
+        HFOfrequency = getValue();
+        setFrequency(HFOfrequency * 2);
       } break;
 
     case 2:
@@ -236,7 +237,12 @@ void loop()
       uint16_t v1,v2;
       v1 = lfo1.calcNewValue();
       v2 = lfo2.calcNewValue();
-      if (SynthSetup & 0x01 ) setFrequency(v1);
+      if (SynthSetup & 0x01 )
+      {
+        int16_t temp;
+        temp=HFOfrequency+v1;
+        setFrequency(temp);
+      }
       if (SynthSetup & 0x02 ) setAmplitude((v2*Volume)>>8);
     }
   }
