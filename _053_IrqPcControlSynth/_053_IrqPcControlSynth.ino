@@ -61,15 +61,7 @@ void setup()
   beginNeoPittix ();
   setFrequency(440);
 
-  //delay(1000);
-  INITAUDIOPORT;
-
-  // pin change interrupts on Attiny85
-  // https://thewanderingengineer.com/2014/08/11/pin-change-interrupts-on-attiny85/
-  GIMSK = 0b00100000;    // turns on pin change interrupts
-  // none none PCINT5 PCINT4 PCINT3 PCINT2 PCINT1 PCINT0
-  PCMSK = 0b00001000;    // turn on interrupts on pins PB5
-  sei();                 // enables interrupts
+  decoderBegin();
 #if defined (__AVR_ATtiny85__)
   if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
 #endif

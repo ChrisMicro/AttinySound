@@ -64,9 +64,12 @@ extern "C"
 	#define RECEIVEBYTES        2
 	#define DATARECEIVED        3
 
+  extern volatile uint8_t FrameData[FRAMESIZE];
+  extern uint16_t DecoderData;  
+  extern uint8_t FrameError;
+
   void decoderBegin();
-	extern volatile uint8_t FrameData[FRAMESIZE];
-	extern uint8_t FrameError;
+  uint8_t isDataAvailable();
 	uint8_t receiveFrame_S(void);
 
 #endif // __DECODERSTATEMACHINE__

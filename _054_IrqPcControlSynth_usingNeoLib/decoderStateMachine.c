@@ -37,6 +37,36 @@ uint8_t HighTakesLonger;
 
 volatile uint8_t error=false;
 
+volatile uint8_t dataAvailableFlag = false;
+volatile uint16_t InterruptData;
+uint16_t DecoderData;
+
+uint8_t isDataAvailable()
+{
+  uint8_t value;
+  cli();
+  value = dataAvailableFlag;
+  dataAvailableFlag = false;
+  DecoderData = InterruptData;
+  sei();
+  return value;
+}
+
+ISR(PCINT0_vect)
+{
+  //LEDOFF;
+  //TOGGLELED;
+  if (receiveFrame_S() == DATARECEIVED)
+  {
+    dataAvailableFlag = true;
+    InterruptData = FrameData[1] + (((uint16_t)FrameData[0]) << 8);
+    //InterruptData=FrameData[1];
+
+    //TOGGLELED;
+  }
+  //LEDON;
+}
+
 void decoderBegin()
 {
   INITAUDIOPORT;
