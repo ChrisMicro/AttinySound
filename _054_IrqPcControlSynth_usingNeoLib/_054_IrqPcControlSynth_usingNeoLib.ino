@@ -144,7 +144,9 @@ uint8_t ButtonSelector2 = 0;
 
 void showState()
 {
-  setColorAllPixel(pixels.Color(0, 15, 15));
+  setColorAllPixel(pixels.Color(0, 15, 0));
+  displayBinaryValue( 0b11111000 ,  pixels.Color(15, 0, 0)); // display the value as binary on 8 NEO leds
+ 
 
   pixels.setPixelColor(ButtonSelector1, COLOR_DARKGREEN);
 
@@ -153,7 +155,7 @@ void showState()
   pixels.show();
 }
 
-#define POITHYSTERESIS 20
+#define POITHYSTERESIS 30
 
 void loop()
 {
@@ -175,11 +177,9 @@ void loop()
   while ( (uint16_t) millis() - StartTime_ms < LoopTime_ms );
   StartTime_ms = millis();
 
-  if ( abs(lp - oldPotiLeft) > POITHYSTERESIS *2 || abs(rp - oldPotiRight) > POITHYSTERESIS *2 )
+  if ( abs(lp - oldPotiLeft) > POITHYSTERESIS *2 || abs(rp - oldPotiRight) > POITHYSTERESIS *2 && !potiControlFlag)
   {
     potiControlFlag = true;
-    //setColorAllPixel(pixels.Color(0, 15, 15));
-    //pixels.show();
     showState();
   }
   
@@ -194,6 +194,7 @@ void loop()
     oldPotiLeft = getPoti(POTI_LEFT);
     showState();
   }
+  
   if (b == 2 && potiControlFlag)
   {
     pixels.setPixelColor(7 - ButtonSelector2, COLOR_BLACK);
@@ -204,7 +205,6 @@ void loop()
     showState();
   }
 
-  //if ( ButtonSelector1 != 255)
   if (potiControlFlag)
   {
 
