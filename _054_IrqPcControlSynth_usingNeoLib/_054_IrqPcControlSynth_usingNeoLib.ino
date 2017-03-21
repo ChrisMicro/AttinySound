@@ -113,6 +113,8 @@ void comandInterpreter()
 
 uint16_t StartTime_ms;
 
+int16_t oldPotiLeft;
+int16_t oldPotiRight;
 
 void setup()
 {
@@ -133,45 +135,79 @@ void setup()
   lfo2.setMinMax(1, 255);
 
   StartTime_ms = millis();
+  oldPotiLeft = getPoti(POTI_LEFT);
+  oldPotiRight = getPoti(POTI_RIGHT);
 }
 
-uint8_t ButtonSelector1 = 255; // no button selected
-uint8_t ButtonSelector2 = 255; // no button selected
+uint8_t ButtonSelector1 = 0; 
+uint8_t ButtonSelector2 = 0; 
+
+void showState()
+{
+  setColorAllPixel(pixels.Color(0, 15, 15));
+
+  pixels.setPixelColor(ButtonSelector1, COLOR_DARKGREEN);
+
+  pixels.setPixelColor(7 - ButtonSelector2, COLOR_RED);
+
+  pixels.show();
+}
 
 #define POITHYSTERESIS 20
 
 void loop()
 {
-  static int16_t oldPotiLeft;
-  static int16_t oldPotiRight;
+
+  static uint8_t potiControlFlag = false;
+  uint8_t b;
 
   if (isDataAvailable())
   {
     comandInterpreter();
+    potiControlFlag = false;
+    oldPotiLeft = getPoti(POTI_LEFT);
   }
 
-  uint8_t b = wasButtonPressed();
-  if (b == 1)
+  int16_t lp = getPoti( POTI_LEFT );   // range 0..1023
+  int16_t rp = getPoti( POTI_RIGHT );  // range 0..1023
+
+  // wait for next loop cycle
+  while ( (uint16_t) millis() - StartTime_ms < LoopTime_ms );
+  StartTime_ms = millis();
+
+  if ( abs(lp - oldPotiLeft) > POITHYSTERESIS *2 || abs(rp - oldPotiRight) > POITHYSTERESIS *2 )
+  {
+    potiControlFlag = true;
+    //setColorAllPixel(pixels.Color(0, 15, 15));
+    //pixels.show();
+    showState();
+  }
+  
+  b = wasButtonPressed();
+
+  if (b == 1 && potiControlFlag)
   {
     pixels.setPixelColor(ButtonSelector1, COLOR_BLACK);
     ButtonSelector1++;
     if (ButtonSelector1 > 2) ButtonSelector1 = 0;
-    pixels.setPixelColor(ButtonSelector1, COLOR_DARKGREEN);
-    pixels.show();
+
+    oldPotiLeft = getPoti(POTI_LEFT);
+    showState();
   }
-  if (b == 2)
+  if (b == 2 && potiControlFlag)
   {
     pixels.setPixelColor(7 - ButtonSelector2, COLOR_BLACK);
     ButtonSelector2++;
     if (ButtonSelector2 > 4) ButtonSelector2 = 0;
-    pixels.setPixelColor(7 - ButtonSelector2, COLOR_RED);
-    pixels.show();
+
+    oldPotiRight = getPoti(POTI_RIGHT);
+    showState();
   }
 
-  if ( ButtonSelector1 != 255)
+  //if ( ButtonSelector1 != 255)
+  if (potiControlFlag)
   {
-    int16_t lp = getPoti( POTI_LEFT );   // range 0..1023
-    int16_t rp = getPoti( POTI_RIGHT );  // range 0..1023
+
 
     if ( abs(lp - oldPotiLeft) > POITHYSTERESIS )
     {
@@ -203,7 +239,7 @@ void loop()
       {
         case 0:
           {
-            LFO1_Frequency_mHz = rp * 32;
+            LFO1_Frequency_mHz = rp * 16;
             lfo1.setFrequency_mHz( LFO1_Frequency_mHz );
           } break;
         case 1:
@@ -245,9 +281,7 @@ void loop()
   if (LFO2_Frequency_mHz != 0  ) setAmplitude((v2 * Volume) >> 8);
   else setAmplitude(Volume);
 
-  // wait for next loop cycle
-  while ( (uint16_t) millis() - StartTime_ms < LoopTime_ms );
-  StartTime_ms = millis();
+
 
 }
 
