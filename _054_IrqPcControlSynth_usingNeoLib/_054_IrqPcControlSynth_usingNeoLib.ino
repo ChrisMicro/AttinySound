@@ -145,12 +145,12 @@ uint8_t ButtonSelector2 = 0;
 void showState()
 {
   setColorAllPixel(pixels.Color(0, 15, 0));
-  displayBinaryValue( 0b11111000 ,  pixels.Color(15, 0, 0)); // display the value as binary on 8 NEO leds
- 
+  displayBinaryValue( 0b11100000 ,  pixels.Color(15, 0, 0)); // display the value as binary on 8 NEO leds
+  displayBinaryValue( 0b00011100 ,  pixels.Color(10, 2, 10)); // display the value as binary on 8 NEO leds 
 
   pixels.setPixelColor(ButtonSelector1, COLOR_DARKGREEN);
-
-  pixels.setPixelColor(7 - ButtonSelector2, COLOR_RED);
+  if(ButtonSelector2<3)  pixels.setPixelColor(7 - ButtonSelector2, COLOR_RED);
+  else pixels.setPixelColor(7 - ButtonSelector2, COLOR_PINK);
 
   pixels.show();
 }
@@ -189,7 +189,7 @@ void loop()
   {
     pixels.setPixelColor(ButtonSelector1, COLOR_BLACK);
     ButtonSelector1++;
-    if (ButtonSelector1 > 2) ButtonSelector1 = 0;
+    if (ButtonSelector1 > 1) ButtonSelector1 = 0;
 
     oldPotiLeft = getPoti(POTI_LEFT);
     showState();
@@ -199,7 +199,7 @@ void loop()
   {
     pixels.setPixelColor(7 - ButtonSelector2, COLOR_BLACK);
     ButtonSelector2++;
-    if (ButtonSelector2 > 4) ButtonSelector2 = 0;
+    if (ButtonSelector2 > 5) ButtonSelector2 = 0;
 
     oldPotiRight = getPoti(POTI_RIGHT);
     showState();
@@ -224,11 +224,12 @@ void loop()
             setWaveformFine(lp / 2);
           }
           break;
+          /*
         case 2:
           {
             Volume = lp / 4;
           }
-          break;
+          break;*/
       }
       oldPotiLeft = lp;
     }
@@ -259,7 +260,10 @@ void loop()
           {
             lfo2.setWaveformFine(rp);
           } break;
-
+        case 5:
+          {
+            lfo2.setMinMax(rp * 4,255);
+          } break;
           oldPotiRight = rp;
 
       }
