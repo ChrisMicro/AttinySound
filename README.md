@@ -16,6 +16,12 @@ There are sounds which you wouldnt't believe that it is possible to produce with
   <img src="/doc/NeoCycloSynth.PNG" width="480"/>
 </p>
 
+PCB from Ale:
+
+<p align="left">
+  <img src="/doc/AlePCB.PNG" width="480"/>
+</p>
+
 It could be done on a breadboard.
 
 <p align="left">
