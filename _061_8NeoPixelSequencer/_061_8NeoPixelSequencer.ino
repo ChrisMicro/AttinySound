@@ -8,6 +8,7 @@
 
 #include "neolib.h"
 #include "neoSoundPittix.h"
+#include "Pt1.h"
 
 
 typedef struct
@@ -32,7 +33,7 @@ void setup()
 
 uint8_t  LedPosition   = 0;
 uint8_t  ColorPosition = 0;
-uint32_t Colors[] = { COLOR_GREEN, COLOR_RED, COLOR_BLUE, COLOR_PINK};
+//uint32_t Colors[] = { COLOR_GREEN, COLOR_RED, COLOR_BLUE, COLOR_PINK};
 
 
 #define POITHYSTERESIS 30
@@ -42,6 +43,10 @@ int16_t oldPotiRight;
 
 uint8_t State = 0;
 uint16_t Counter = 1000;
+
+Pt1 lp1(0x200);
+
+uint8_t NumberOfSteps;
 
 void loop()
 {
@@ -56,14 +61,21 @@ void loop()
     if ( b == BUTTON_RIGHT + BUTTON_LEFT )
     {
       ColorPosition++ ;
-      if (State == 0)State = 1;
+      if (State == 0)
+      {
+        State = 1;
+        NumberOfSteps = LedPosition;
+        pixels.setPixelColor( LedPosition, COLOR_RED );
+        pixels.show();
+        delay(100);
+      }
       else State = 0;
     }
 
     LedPosition   &= 0b00000111; // prevent out of range
     ColorPosition &= 0b00000011; // prevent out of range
 
-    pixels.setPixelColor( LedPosition, Colors[ColorPosition] );
+    pixels.setPixelColor( LedPosition, COLOR_GREEN );
     pixels.show();
 
     setFrequency( Sounds[ LedPosition ].f_Hz );
@@ -79,6 +91,8 @@ void loop()
       setWaveformFine(rp);
       oldPotiRight = rp;
       Sounds[ LedPosition ].waveType = rp;
+      pixels.setPixelColor( LedPosition, COLOR_BLUE );
+      pixels.show();
     }
 
     if ( abs(lp - oldPotiLeft) > POITHYSTERESIS )
@@ -86,11 +100,15 @@ void loop()
       setFrequency(lp);
       oldPotiLeft = lp;
       Sounds[ LedPosition ].f_Hz = lp;
+      pixels.setPixelColor( LedPosition, COLOR_BLUE );
+      pixels.show();
     }
   }
 
   if (State == 1)
   {
+
+    setAmplitude(lp1.filter(0));
     Counter--;
     if (Counter == 0)
     {
@@ -102,12 +120,15 @@ void loop()
 
 
       LedPosition++;
-      LedPosition   &= 0b00000111; // prevent out of range
+      if ( LedPosition > NumberOfSteps) LedPosition = 0;
+
       pixels.setPixelColor( LedPosition, COLOR_PINK );
       pixels.show();
 
       setFrequency( Sounds[ LedPosition ].f_Hz );
       setWaveformFine( Sounds[ LedPosition ].waveType );
+
+      lp1.setOutput(255);
     }
 
   }
