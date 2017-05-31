@@ -11,6 +11,15 @@
 #include "Pt1.h"
 
 
+#define POITHYSTERESIS 30
+
+uint8_t  LedPosition   = 0;
+
+int16_t oldPotiLeft;
+int16_t oldPotiRight;
+
+Pt1 lp1(0x200);
+
 #define NOTE_C5  523
 #define NOTE_CS5 554
 #define NOTE_D5  587
@@ -51,14 +60,6 @@ void setup()
   beginNeoPittix();
 }
 
-uint8_t  LedPosition   = 0;
-
-#define POITHYSTERESIS 15
-
-int16_t oldPotiLeft;
-int16_t oldPotiRight;
-
-Pt1 lp1(0x200);
 
 void loop()
 {
